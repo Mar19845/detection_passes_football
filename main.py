@@ -7,6 +7,8 @@ from follower import Follower
 class VideoAnalyzer:
     def __init__(self) -> None:
         self.ball_track = pd.DataFrame(columns=['id', 'time', 'x', 'y', 'speed', 'event'])
+        self.follow = Follower()
+        self.detections = []
 
     def run(self, video: str):
         #Reading the video
@@ -114,6 +116,13 @@ class VideoAnalyzer:
                         cv2.putText(image, 'football', (x-2, y-2), font, 0.8, (0,255,0), 2, cv2.LINE_AA)
                         cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),3)
 
+                        self.detections.append([x, y, w, h]) #SE ALMACENA INFORMACIÓN DEL RECTANGULO
+
+            info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
+            for inf in info_id:#Mostramos los datos recabados
+                print(inf)
+                        
+
 
             #cv2.imwrite("./videos/img/frame%d.jpg" % count, res)
             print('Read a new frame: ', success)     # save frame as JPEG file	
@@ -126,3 +135,6 @@ class VideoAnalyzer:
             
         vidcap.release()
         cv2.destroyAllWindows()
+
+v = VideoAnalyzer()
+v.run('test_43.mp4')
