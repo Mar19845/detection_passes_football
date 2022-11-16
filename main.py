@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import pandas as pd
 from follower import Follower
-
+import time
 
 class VideoAnalyzer:
     def __init__(self) -> None:
@@ -17,6 +17,7 @@ class VideoAnalyzer:
         count = 0
         success = True
         idx = 0
+        times = []
         frame_width = int(vidcap.get(3))
         frame_height = int(vidcap.get(4))
 
@@ -113,18 +114,20 @@ class VideoAnalyzer:
                         # detect football
                         cv2.putText(image, 'football', (x-2, y-2), font, 0.8, (0,255,0), 2, cv2.LINE_AA)
                         cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),3)
-
                         self.detections.append([x, y, w, h]) #SE ALMACENA INFORMACIÓN DEL RECTANGULO
 
             info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
             for inf in info_id:#Mostramos los datos recabados
+                time0 = time.process_time()
                 print(inf)
                 x = (inf[0] + inf[2]) / 2
                 y = (inf[1] + inf[3]) / 2
-
+                timeF = time.process_time()
+                times.append(time0 - timeF)
+                
                 values = {
                     'id': inf[4],
-                    'time': 0,
+                    'time': times[info_id.index(inf)],
                     'x': x,
                     'y': y,
                 }
