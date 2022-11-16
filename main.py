@@ -56,7 +56,6 @@ class VideoAnalyzer:
             kernel = np.ones((13,13),np.uint8)
             thresh = cv2.threshold(res_gray,127,255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
             thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
-            
 
             #find contours in threshold image     
             #im2,contours,hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -64,10 +63,10 @@ class VideoAnalyzer:
 
             prev = 0
             font = cv2.FONT_HERSHEY_SIMPLEX
-            
+
             for c in contours:
                 x,y,w,h = cv2.boundingRect(c)
-                
+
                 #Detect players
                 if(h>=(1.5)*w):
                     if(w>15 and h>= 15):
@@ -101,7 +100,7 @@ class VideoAnalyzer:
                             pass
                 if((h>=1 and w>=1) and (h<=30 and w<=30)):
                     player_img = image[y:y+h,x:x+w]
-                
+
                     player_hsv = cv2.cvtColor(player_img,cv2.COLOR_BGR2HSV)
                     #white ball  detection
                     mask1 = cv2.inRange(player_hsv, lower_white, upper_white)
@@ -109,7 +108,6 @@ class VideoAnalyzer:
                     res1 = cv2.cvtColor(res1,cv2.COLOR_HSV2BGR)
                     res1 = cv2.cvtColor(res1,cv2.COLOR_BGR2GRAY)
                     nzCount = cv2.countNonZero(res1)
-            
 
                     if(nzCount >= 3):
                         # detect football
@@ -121,8 +119,16 @@ class VideoAnalyzer:
             info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
             for inf in info_id:#Mostramos los datos recabados
                 print(inf)
-                        
+                x = (inf[0] + inf[2]) / 2
+                y = (inf[1] + inf[3]) / 2
 
+                values = {
+                    'id': inf[4],
+                    'time': 0,
+                    'x': x,
+                    'y': y,
+                }
+                self.ball_track.append(values, ignore_index=True)
 
             #cv2.imwrite("./videos/img/frame%d.jpg" % count, res)
             print('Read a new frame: ', success)     # save frame as JPEG file	
@@ -136,5 +142,7 @@ class VideoAnalyzer:
         vidcap.release()
         cv2.destroyAllWindows()
 
-v = VideoAnalyzer()
-v.run('test_43.mp4')
+
+if __name__ == "__main__":
+    v = VideoAnalyzer()
+    v.run('test_43.mp4')
