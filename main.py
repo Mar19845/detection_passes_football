@@ -138,3 +138,7 @@ class VideoAnalyzer:
             print(df)
         vidcap.release()
         cv2.destroyAllWindows()
+        
+if __name__ == "__main__":
+    v = VideoAnalyzer()
+    df = v.run('test_10.mp4')
