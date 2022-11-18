@@ -16,10 +16,12 @@ class VideoAnalyzer:
         success,image = vidcap.read()
         count = 0
         success = True
+        lista = []
+        tiempo = 0.0
         idx = 0
-        times = []
         frame_width = int(vidcap.get(3))
         frame_height = int(vidcap.get(4))
+        times = [0.0]
 
         size = (frame_width, frame_height)
         result = cv2.VideoWriter('filename.avi', cv2.VideoWriter_fourcc(*'MJPG'),10, size)
@@ -87,18 +89,6 @@ class VideoAnalyzer:
                         res2 = cv2.cvtColor(res2,cv2.COLOR_BGR2GRAY)
                         nzCountred = cv2.countNonZero(res2)
 
-                        if(nzCount >= 20):
-                            #Mark blue jersy players as france
-                            cv2.putText(image, 'WHITE TEAM', (x-2, y-2), font, 0.8, (0,255,0), 2, cv2.LINE_AA)
-                            cv2.rectangle(image,(x,y),(x+w,y+h),(255,255,255),3)
-                        else:
-                            pass
-                        if(nzCountred>=20):
-                            #Mark red jersy players as belgium
-                            cv2.putText(image, 'RED TEAM', (x-2, y-2), font, 0.8, (0,0,255), 2, cv2.LINE_AA)
-                            cv2.rectangle(image,(x,y),(x+w,y+h),(0,0,255),3)
-                        else:
-                            pass
                 if((h>=1 and w>=1) and (h<=30 and w<=30)):
                     player_img = image[y:y+h,x:x+w]
 
@@ -118,21 +108,21 @@ class VideoAnalyzer:
 
             info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
             for inf in info_id:#Mostramos los datos recabados
-                time0 = time.process_time()
                 print(inf)
                 x = (inf[0] + inf[2]) / 2
                 y = (inf[1] + inf[3]) / 2
-                timeF = time.process_time()
-                times.append(time0 - timeF)
-                
+                tiempo = float(count)/(vidcap.get(cv2.CAP_PROP_POS_MSEC) + 1)
+                print(inf[4], tiempo)
                 values = {
                     'id': inf[4],
-                    'time': times[info_id.index(inf)],
+                    'time': tiempo,
                     'x': x,
                     'y': y,
+                    'Speed': None
                 }
-                self.ball_track.append(values, ignore_index=True)
-
+                lista.append(values)
+            
+            df = pd.DataFrame.from_dict(lista)
             #cv2.imwrite("./videos/img/frame%d.jpg" % count, res)
             print('Read a new frame: ', success)     # save frame as JPEG file	
             count += 1
@@ -141,11 +131,11 @@ class VideoAnalyzer:
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             success,image = vidcap.read()
-            
+            print(df)
         vidcap.release()
         cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
     v = VideoAnalyzer()
-    v.run('test_43.mp4')
+    v.run('test_10.mp4')
