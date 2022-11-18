@@ -17,12 +17,14 @@ class VideoAnalyzer:
         count = 0
         success = True
         lista = []
+        pelota = 0
         tiempo = 0.0
         idx = 0
         frame_width = int(vidcap.get(3))
         frame_height = int(vidcap.get(4))
         times = [0.0]
-
+        ids_football = []
+        
         size = (frame_width, frame_height)
         result = cv2.VideoWriter('filename.avi', cv2.VideoWriter_fourcc(*'MJPG'),10, size)
         #Read the video frame by frame
@@ -101,10 +103,12 @@ class VideoAnalyzer:
                     nzCount = cv2.countNonZero(res1)
 
                     if(nzCount >= 3):
+                        pelota += 1
                         # detect football
-                        cv2.putText(image, 'football', (x-2, y-2), font, 0.8, (0,255,0), 2, cv2.LINE_AA)
+                        cv2.putText(image, 'football' + str(pelota), (x-2, y-2), font, 0.8, (0,255,0), 2, cv2.LINE_AA)
                         cv2.rectangle(image,(x,y),(x+w,y+h),(0,255,0),3)
                         self.detections.append([x, y, w, h]) #SE ALMACENA INFORMACIÓN DEL RECTANGULO
+                        ids_football.append(pelota)
 
             info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
             for inf in info_id:#Mostramos los datos recabados
@@ -114,7 +118,7 @@ class VideoAnalyzer:
                 tiempo = float(count)/(vidcap.get(cv2.CAP_PROP_POS_MSEC) + 1)
                 print(inf[4], tiempo)
                 values = {
-                    'id': inf[4],
+                    'id': ids_football[info_id.index(inf)],
                     'time': tiempo,
                     'x': x,
                     'y': y,
@@ -134,8 +138,3 @@ class VideoAnalyzer:
             print(df)
         vidcap.release()
         cv2.destroyAllWindows()
-
-
-if __name__ == "__main__":
-    v = VideoAnalyzer()
-    v.run('test_10.mp4')
