@@ -112,29 +112,29 @@ class VideoAnalyzer:
 
             info_id = self.follow.rastreo(self.detections) #Obtenemos la informacón de la pelota, mandando la detección de esta
             for inf in info_id:#Mostramos los datos recabados
-                print(inf)
                 x = (inf[0] + inf[2]) / 2
                 y = (inf[1] + inf[3]) / 2
                 tiempo = float(count)/(vidcap.get(cv2.CAP_PROP_POS_MSEC) + 1)
-                print(inf[4], tiempo)
+                # print(inf[4], tiempo)
                 values = {
                     'id': ids_football[info_id.index(inf)],
                     'time': tiempo,
                     'x': x,
                     'y': y,
-                    'Speed': None
+                    'speed': None,
+                    'event': None,
                 }
                 lista.append(values)
             
             df = pd.DataFrame.from_dict(lista)
             #cv2.imwrite("./videos/img/frame%d.jpg" % count, res)
-            print('Read a new frame: ', success)     # save frame as JPEG file	
+            # print('Read a new frame: ', success)     # save frame as JPEG file	
             count += 1
             cv2.imshow('Match Detection',image)
             result.write(image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             success,image = vidcap.read()
-            print(df)
         vidcap.release()
         cv2.destroyAllWindows()
+        return df
