@@ -11,4 +11,4 @@ def create_video(row, folder_name,before=5, after=5):
         targetname=filename,
     )
     
-    return Video(filename, width=800)
+    return Video(filename, width=800),str(row["event_attributes"]),filename
