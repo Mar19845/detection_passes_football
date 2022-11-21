@@ -35,7 +35,8 @@ def home():
 
         return render_template(
             'video.html',
-            filename='files/test_10.mp4',
+            title=file.filename,
+            filename=f'./files/{file.filename}',
             predict=predictions,
             rows=len(predictions['time'])
         )
