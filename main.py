@@ -119,7 +119,6 @@ class VideoAnalyzer:
                 tiempo = float(count)/(vidcap.get(cv2.CAP_PROP_POS_MSEC) + 1)
                 # print(inf[4], tiempo)
                 values = {
-                    # 'id': ids_football[info_id.index(inf)],
                     'time': tiempo,
                     'x': x,
                     'y': y,
