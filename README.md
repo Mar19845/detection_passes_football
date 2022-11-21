@@ -11,3 +11,14 @@ pip install -r requirements.txt
 Data obtain from https://www.kaggle.com/competitions/dfl-bundesliga-data-shootout
 
 Download the videos and save them in the folder ./videos
+
+## Run
+Command in the root project terminal
+
+`python App/app.py`
+
+Open in the browser http://127.0.0.1:5000/
+
+Upload a video in format `.mp4` with a soccer clip of a least 1 minute long.
+
+Wait untill the algorithm finishes, can take a long time.
