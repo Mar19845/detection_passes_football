@@ -13,6 +13,16 @@
         </video>
 
         <table>
+            <tr>
+                <th>Time (s)</th>
+                <th>Pass detection</th>
+            </tr>
+            {%for i in range(rows)%}
+            <tr>
+                <td>{{predict['time'][i]}}</td>
+                <td>{{predict['pass'][i]}}</td>
+            </tr>
+            {%endfor%}
         </table>
     </body>
 </html>
