@@ -4,6 +4,12 @@ import pandas as pd
 from follower import Follower
 import sklearn.cluster as cluster
 from sklearn.preprocessing import StandardScaler
+from tensorflow import keras
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
+from sklearn.model_selection import train_test_split
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 
 class VideoAnalyzer:
@@ -161,3 +167,40 @@ class VideoAnalyzer:
         scaled_df = pd.DataFrame(scaled, columns=df.columns)
 
         return scaled_df
+
+    def create_video(self, time, name, n, before=5, after=5):
+        filename = f"App/static/clips/{name.replace('.mp4', '') + '_' + str(n)}.mp4"
+        ffmpeg_extract_subclip(
+            f"App/static/files/{name}",
+            time - before,
+            time + after,
+            targetname=filename,
+        )
+        return filename
+
+    def create_clips(self, filename: str):
+        paths = []
+
+        for i in range(1, 3):
+            path = self.create_video(i*5, filename, i)
+            paths.append(path)
+
+        return paths
+
+    def predict(self, filename: str):
+        paths = self.create_clips(filename)
+        x = [self.prepare(self.run(path)).values.tolist()[:101] for path in paths]
+
+        model = keras.models.load_model('VideoPredictionModel')
+        results = model.predict(x)
+
+        predictions = {
+            'time': [],
+            'pass': []
+        }
+
+        for i in range(len(results)):
+            predictions['time'].append(f'{i*10} - {i*10+10}')
+            predictions['pass'].append("Pass" if results[i] else "Not pass")
+
+        return predictions

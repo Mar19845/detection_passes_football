@@ -29,7 +29,16 @@ def home():
                 secure_filename(file.filename)
             )
         )
-        return "File saved"
+
+        v = VideoAnalyzer()
+        predictions = v.predict(file.filename)
+
+        return render_template(
+            'video.html',
+            filename='files/test_10.mp4',
+            predict=predictions,
+            rows=len(predictions['time'])
+        )
     return render_template('index.html', form=form)
 
 
