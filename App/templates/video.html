@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href={{url_for('static', filename='css/index.css')}}>
+        <title>UVG Pass Detection</title>
+    </head>
+    <body>
+        <h1>{{video_name}}</h1>
+
+        <video autoplay="autoplay" controls="controls" preload="preload">
+            <source src={{ url_for('static', filename=filename) }} type="video/mp4"></source>
+        </video>
+
+        <table>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href={{url_for('static', filename='css/index.css')}}>
+        <title>UVG Pass Detection</title>
+    </head>
+    <body>
+        <h1>UVG Pass Detection</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {{form.hidden_tag()}}
+            {{form.file()}}
+            {{form.submit()}}
+        </form>
+    </body>
+</html>
